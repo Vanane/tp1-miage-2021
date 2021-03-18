@@ -16,7 +16,10 @@ public class AddTodoItemService implements AddTodoItem {
 	//A compléter
 	public AddTodoItemService(UpdateTodoItem updateTodoItem) {
 	}
-
-	//A compléter	
+	//A compléter écrire comment on sauvegarde
+	public void addTodoItem(TodoItem item)
+	{
+		this.updateTodoItem.storeNewTodoItem(item);
+	}
 
 }
