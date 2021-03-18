@@ -42,7 +42,7 @@ public class TodoListController {
 	public void createTodoItem(@RequestBody TodoItem todoItem) {
 		// Code à compléter
 		/*
-		* On suppose que l'objet est créé et et trabsféré dans les paramètres de la fonction.
+		* On suppose que l'objet est créé et et transféré dans les paramètres de la fonction.
 		*/
 		
 		this.todoItemRepository.save(todoItem);
