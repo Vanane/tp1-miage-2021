@@ -5,7 +5,10 @@ import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 
+import org.apache.catalina.mapper.Mapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 
 import com.acme.todolist.application.port.out.LoadTodoItem;
 import com.acme.todolist.application.port.out.UpdateTodoItem;
@@ -40,7 +43,17 @@ public class TodoItemPersistenceAdapter implements LoadTodoItem,UpdateTodoItem {
 	// A compléter fonction pour le sauvegarder dans un tableau
 	public void storeNewTodoItem(TodoItem item)
 	{
-		this.todoItemRepository.save(this.mapper.mapToTodoItemJpaEntity(item));
+				
+		if(todoItemRepository.findById(item.getId()).isEmpty())
+		{
+			this.todoItemRepository.save(this.mapper.mapToTodoItemJpaEntity(item));
+		}
+		else {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+		}
+			
+		
+		
 	}
 		
 }
