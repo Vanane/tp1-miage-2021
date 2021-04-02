@@ -119,3 +119,72 @@ _Temps estimé : 20 mins_
 - Pour tester l'adapter REST, utiliser l'annotation `@WebMvcTest(controllers = TodoListController.class)`
 - Voir cette https://spring.io/guides/gs/testing-web/[documentation]
 =====
+_________________________________________________________________________________________________________________________
+Réponses aux questions :
+
+
+
+Conception Logicielle
+Travaux pratiques n°1
+
+Auteurs
+Alvin AUVRAY
+Oriane GAMBA
+Résumé
+Rendu du TP n°1 d’ingénierie logicielle. Utilisation de Spring et de Docker pour s’initier à l’architecture hexagonale, et aux annotations.
+Date de création
+16/03/2021
+Date de modification
+27/03/2021
+Version
+1
+
+
+
+Exercice 1
+1. Le code est-il structuré en couches ?
+Le code n'est pas structuré en couche, les différentes parties du programme sont séparées dans des fichiers spécifiques au fonctionnalités mais sont toutes liées et présentes dans le même paquet.
+Par exemple, la partie repository appelle la partie contrôleur et inversement. Elles ne sont pas indépendantes.
+2. Quels problèmes ce code peut-il poser ?
+Cela peut devenir un problème lors d’ajout répété de fonctions ou de la non mise à jour entre les nombreux fichiers.
+Avec un nombre plus important de fichiers, il sera difficilement compréhensible pour un nouvel utilisateur de rejoindre le projet. Les parties n’étant pas indépendantes, il est impossible de récupérer et réutiliser un élément sans prendre l’ensemble du projet.
+3. Où se trouve le code métier (voir la règle de gestion RG 1) ?
+RG 1 : si l'item a plus de 24h, ajouter dans le contenu une note "[LATE!]”. Le code métier se trouve dans TodoIistControlleur.java dans le dossier src/main/java.
+
+
+4. Cette règle est-elle facilement testable par un test unitaire ?
+Oui, la condition de test reste simple, il s’agit d’une seule fonction. Cependant, la règle métier est contenue dans le contrôleur, et le test unitaire nécessite donc de devoir créer un contrôleur ainsi qu’un objet de la classe métier.
+
+docker run -it -e POSTGRES_PASSWORD=password -p 5432:5432 postgres
+5. Expliquer cette ligne de commande (y compris les options utilisées)
+On déploie un conteneur Docker, et on précise le mot de passe pour la base PostGres.
+L’option -it active le mode interactif.
+L’option -p permet de préciser le numéro de port.
+L’option -e permet de déclarer une variable d’environnement dans le conteneur.
+Enfin, l’option “postgres” précise quel environnement déployer dans le conteneur.
+6. Pourquoi todoItemRepository est-il null ? Quelle est la meilleure façon de l’injecter ?
+Lorsque le contrôleur est créé, le framework Spring lui affecte les variables des classes dont il dépend. Cependant, afin que Spring puisse opérer, il est nécessaire d’annoter les différents éléments des classes. Par exemple, pour que Spring puisse créer l’objet todoItemRepository nécessaire au contrôleur, il faut ajouter l’annotation @Inject au constructeur. 
+Exercice 2
+1. Rappeler en quelques lignes les grands principes de l’architecture hexagonale.
+Le principe de l’architecture hexagonale repose sur la séparation et le découplage du métier par rapport au reste de l’application. Cette architecture permet de rendre indépendants le domaine de l’application (les classes métier), des autres modules de l’application.
+
+Exercice 3
+1. Quels types de tests devra-t-on écrire pour les adaptateurs ?
+    Les adaptateurs sont composés de 4 fichiers de persistance et d’un contrôleur REST. Afin de tester ces adaptateurs et valider leur performance, il faudra écrire des tests unitaires.
+Il faudra également réaliser des tests d’intégration permettant de s’assurer du bon fonctionnement dans la globalité de l’application avec l’ajout de ces adaptateur.
+
+2. Que teste-on dans ce cas ?
+    Nous testons les fonctions élémentaires, puis les fonctions composées de ces fonctions élémentaires. Dans le cas des classes de persistance, il faut tester :
+L’ajout d’un nouveau todoItem
+L’ajout d’un todoItem existant
+La récupération des todoItems
+Dans le cas du contrôleur, il faut tester :
+L’ajout d’un nouveau todoItem, et le statut retourné qui doit être 201(CREATED)
+L’ajout d’un todoItem existant, et le statut retourné doit être 400 (BAD_REQUEST)
+La récupération des todoItems, et le statut retourné doit être 200 (OK)
+De plus, un todoItem doit posséder un flag “[LATE!]” s’il est en retard de 24h. Des tests supplémentaires sont à prévoir :
+Récupérer un todoItem qui n’est pas en retard, et vérifier que le flag n’est pas présent
+Récupérer un todoItem qui est en retard, et vérifier que le flag est présent
+
+
+
